@@ -1,14 +1,15 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = async (env, agrv) => {
   const isDev = agrv.mode === 'development';
-  const PORT = 9000;
 
   const basePlugins = [
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
+    new MiniCssExtractPlugin(),
   ];
   const prodPlugins = [...basePlugins];
 
@@ -20,6 +21,20 @@ module.exports = async (env, agrv) => {
           test: /\.(ts|tsx)$/,
           use: ['ts-loader'],
           exclude: /node_modules/,
+        },
+        {
+          test: /\.(s[ac]ss|css)$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: { sourceMap: isDev ? true : false },
+            },
+            {
+              loader: 'sass-loader',
+              options: { sourceMap: isDev ? true : false },
+            },
+          ],
         },
       ],
     },
@@ -49,7 +64,7 @@ module.exports = async (env, agrv) => {
       static: {
         directory: path.join(__dirname, 'public'),
       },
-      port: PORT,
+      port: 9000,
       hot: true,
       open: true,
     },
