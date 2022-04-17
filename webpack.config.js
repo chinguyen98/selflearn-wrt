@@ -1,11 +1,36 @@
 const path = require('path');
+const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const CopyPlugin = require('copy-webpack-plugin');
+
+const directoryPath = path.resolve('public');
+const getDirs = async () => {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryPath, (err, files) => {
+      if (err) {
+        reject('Unable to scan directory: ' + err);
+      }
+      resolve(files);
+    });
+  });
+};
 
 module.exports = async (env, agrv) => {
   const isDev = agrv.mode === 'development';
+
+  const dirs = await getDirs();
+  const copyPluginPatterns = dirs
+    .filter((dir) => dir !== 'index.html')
+    .map((dir) => {
+      return {
+        from: dir,
+        to: '',
+        context: path.resolve('public'),
+      };
+    });
 
   const basePlugins = [
     new Dotenv({
@@ -20,6 +45,13 @@ module.exports = async (env, agrv) => {
     }),
     new CleanWebpackPlugin(),
   ];
+  if (copyPluginPatterns.length > 0) {
+    basePlugins.push(
+      new CopyPlugin({
+        patterns: copyPluginPatterns,
+      })
+    );
+  }
   const prodPlugins = [...basePlugins];
 
   return {
