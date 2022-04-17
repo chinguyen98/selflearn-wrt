@@ -9,7 +9,9 @@ module.exports = async (env, agrv) => {
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: isDev ? '[name].css' : 'static/css/[name].[contenthash:6].css',
+    }),
   ];
   const prodPlugins = [...basePlugins];
 
@@ -48,7 +50,7 @@ module.exports = async (env, agrv) => {
     output: {
       path: path.resolve('build'),
       publicPath: '/',
-      filename: 'static/js/main.js',
+      filename: 'static/js/main.[contenthash:6].js',
       environment: {
         arrowFunction: false,
         bigIntLiteral: false,
@@ -67,6 +69,7 @@ module.exports = async (env, agrv) => {
       port: 9000,
       hot: true,
       open: true,
+      historyApiFallback: true,
     },
     plugins: isDev ? basePlugins : prodPlugins,
     performance: {
