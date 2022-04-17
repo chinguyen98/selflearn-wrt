@@ -2,11 +2,16 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = async (env, agrv) => {
   const isDev = agrv.mode === 'development';
 
   const basePlugins = [
+    new Dotenv({
+      safe: true,
+      allowEmptyValues: true,
+    }),
     new HtmlWebpackPlugin({
       template: 'public/index.html',
     }),
