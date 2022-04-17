@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = async (env, agrv) => {
   const isDev = agrv.mode === 'development';
@@ -12,6 +13,7 @@ module.exports = async (env, agrv) => {
     new MiniCssExtractPlugin({
       filename: isDev ? '[name].css' : 'static/css/[name].[contenthash:6].css',
     }),
+    new CleanWebpackPlugin(),
   ];
   const prodPlugins = [...basePlugins];
 
