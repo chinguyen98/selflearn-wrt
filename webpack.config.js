@@ -43,7 +43,6 @@ module.exports = async (env, agrv) => {
     new MiniCssExtractPlugin({
       filename: isDev ? '[name].css' : 'static/css/[name].[contenthash:6].css',
     }),
-    new CleanWebpackPlugin(),
   ];
   if (copyPluginPatterns.length > 0) {
     basePlugins.push(
@@ -52,7 +51,7 @@ module.exports = async (env, agrv) => {
       })
     );
   }
-  const prodPlugins = [...basePlugins];
+  const prodPlugins = [...basePlugins, new CleanWebpackPlugin()];
 
   return {
     entry: './src/index.tsx',
